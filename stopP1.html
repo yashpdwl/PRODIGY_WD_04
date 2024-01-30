@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stop Watch</title>
+    <link rel="stylesheet" href="wstyle.css">
+
+  
+  </head>
+
+<body>
+  <h1>Stop Watch</h1>
+  <div id="stopwatch">00:00:00<span id="milliseconds">.00</span></div>
+  <button onclick="startStop()">Start/Stop</button>
+  <button onclick="reset()">Reset</button>
+  <button onclick="lap()">Lap</button>
+
+  <ul id="lapList"></ul>
+
+  <script>
+    let isRunning = false;
+    let lapCount = 1;
+    let interval;
+    let startTime;
+    let elapsedTime = 0;
+
+    function startStop() {
+      if (isRunning) {
+        clearInterval(interval);
+        isRunning = false;
+      } else {
+        startTime = Date.now() - elapsedTime;
+        interval = setInterval(updateTime, 10);
+        isRunning = true;
+      }
+    }
+
+    function updateTime() {
+      const currentTime = Date.now();
+      elapsedTime = currentTime - startTime;
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      const formattedTime = formatTime(elapsedTime);
+      document.getElementById('stopwatch').innerHTML = formattedTime;
+    }
+
+    function reset() {
+      clearInterval(interval);
+      isRunning = false;
+      elapsedTime = 0;
+      updateDisplay();
+      lapCount = 1;
+      document.getElementById('lapList').innerHTML = '';
+    }
+
+    function lap() {
+      if (isRunning) {
+        const lapTime = elapsedTime;
+        const formattedLapTime = formatTime(lapTime);
+        const lapItem = document.createElement('li');
+        lapItem.innerHTML = `<strong>Lap ${lapCount}:</strong> ${formattedLapTime}`;
+        document.getElementById('lapList').appendChild(lapItem);
+        lapCount++;
+      }
+    }
+
+    function formatTime(milliseconds) {
+      const seconds = Math.floor(milliseconds / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+
+      const formattedHours = pad(hours);
+      const formattedMinutes = pad(minutes % 60);
+      const formattedSeconds = pad(seconds % 60);
+      const formattedMilliseconds = pad(milliseconds % 1000, 3);
+
+      return `${formattedHours}:${formattedMinutes}:${formattedSeconds}<span id="milliseconds">.${formattedMilliseconds}</span>`;
+    }
+
+    function pad(value, length = 2) {
+      const paddedValue = '0' + value;
+      return paddedValue.slice(-length);
+    }
+  </script>
+</body>
+
+</html>

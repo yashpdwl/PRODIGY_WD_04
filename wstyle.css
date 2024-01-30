@@ -1,0 +1,52 @@
+body {
+        background: url('stopWa.jpg') ;
+        background-size: cover;
+        color: white;
+        font-family: 'Arial', sans-serif;
+        text-align: center;
+        padding: 20px;
+        margin: 0;
+      }
+  
+      h1 {
+        color: #ffffff;
+      }
+  
+      #stopwatch {
+        font-size: 3em;
+        margin: 20px 0;
+      }
+  
+      button {
+        background-color: #333;
+        color: white;
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 5px;
+        transition: background-color 0.3s ease;
+        border: 1.5px solid #ffffff;
+      }
+  
+      button:hover {
+        background-color: #333;
+      }
+  
+      #lapList {
+        list-style: none;
+        padding: 0;
+        text-align: left;
+        margin-top: 20px;
+      }
+  
+      #lapList li {
+        margin: 10px;
+        padding: 15px;
+        border: 1px solid #ffffff;
+        background-color: #333;
+        color: white;
+        border-radius: 8px;
+      }
+    

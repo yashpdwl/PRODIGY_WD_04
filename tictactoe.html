@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
+  <style>
+    body {
+      background: url('tt.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #gameTitle {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 4px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #ffffff00;
+      transition: background-color 0.3s ease;
+    }
+
+    .cell:hover {
+      background-color: #3333337d;
+    }
+
+    .x {
+      color: #ffffff;
+    }
+
+    .o {
+      color: #ffffff;
+    }
+
+    #switchModeContainer {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #switchModeButton {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      border: 1.5px solid #ffffff;
+    }
+
+    #modeMessage {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      font-family: 'Courier New', Courier, monospace;
+      color: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="gameTitle">Tic-Tac-Toe</div>
+  <div id="board"></div>
+  <div id="switchModeContainer">
+    <button id="switchModeButton" onclick="switchMode()">Switch Mode</button>
+    <p id="modeMessage">Playing in Solo Mode</p>
+  </div>
+
+  <script>
+    const board = document.getElementById('board');
+    const cells = [];
+    let currentPlayer = 'X';
+    let gameActive = true;
+    let soloMode = true;
+
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.row = i;
+        cell.dataset.col = j;
+        cell.addEventListener('click', handleCellClick);
+        cells.push(cell);
+        board.appendChild(cell);
+      }
+    }
+
+    function handleCellClick() {
+      if (!gameActive || this.textContent !== '') return;
+
+      this.textContent = currentPlayer;
+
+      // Add class based on the current player (X or O)
+      this.classList.add(currentPlayer.toLowerCase());
+
+      if (checkWinner()) {
+        alert(`${currentPlayer} wins!`);
+        resetGame();
+      } else if (isBoardFull()) {
+        alert('It\'s a tie!');
+        resetGame();
+      } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+        if (gameActive && soloMode && currentPlayer === 'O') {
+          makeComputerMove();
+        }
+      }
+    }
+
+    function switchMode() {
+      soloMode = !soloMode;
+      resetGame();
+      updateModeMessage();
+    }
+
+    function updateModeMessage() {
+      const modeMessage = document.getElementById('modeMessage');
+      modeMessage.textContent = soloMode ? 'Playing in Solo Mode' : 'Playing in Two-Player Mode';
+    }
+
+    function checkWinner() {
+      const winningCombos = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+
+      return winningCombos.some(combo => {
+        const [a, b, c] = combo;
+        return cells[a].textContent !== '' &&
+          cells[a].textContent === cells[b].textContent &&
+          cells[a].textContent === cells[c].textContent;
+      });
+    }
+
+    function isBoardFull() {
+      return cells.every(cell => cell.textContent !== '');
+    }
+
+    function resetGame() {
+      cells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('x', 'o');
+      });
+      currentPlayer = 'X';
+      gameActive = true;
+      updateModeMessage();
+    }
+
+    function makeComputerMove() {
+      const emptyCells = cells.filter(cell => cell.textContent === '');
+      if (emptyCells.length > 0) {
+        const randomIndex = Math.floor(Math.random() * emptyCells.length);
+        emptyCells[randomIndex].textContent = 'O';
+        emptyCells[randomIndex].classList.add('o');
+
+        if (checkWinner()) {
+          alert('Computer wins!');
+          resetGame();
+        } else if (isBoardFull()) {
+          alert('It\'s a tie!');
+          resetGame();
+        } else {
+          currentPlayer = 'X';
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
